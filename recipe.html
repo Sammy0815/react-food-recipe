@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Recipe App</title>
+  <link rel="stylesheet" href="recipe.css">
+  <script src="https://kit.fontawesome.com/5957054699.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/babel-standalone@6/babel.js"></script>
+
+
+
+
+
+
+
+
+  <script type="text/babel">
+  
+    const { useState } = React;
+    const {useEffect} = React;
+    const URL = 'https://api.spoonacular.com/recipes/complexSearch'
+    const API_KEY = '8e4889c6a8474f1abc32f6ca5a995857'
+  
+    // NAV COMPONENT 
+  function Nav(){
+    return (
+      <div className='nav'>
+        <img src="pizza.jpeg" alt="pizza" />
+        <h1>Food Recipes</h1>
+      </div>
+    )
+  }
+ 
+ //SEARCH COMPONENT 
+  function Search({foodItems, setFoodItems}){
+    const [query, setQuery] = useState('pizza');
+    useEffect(()=>{
+      async function fetchFood(){
+        const res = await fetch(`${URL}?query=${query}&apiKey=${API_KEY}`);
+        const data =await res.json();
+        console.log(data.results)
+        setFoodItems(data.results)
+      } fetchFood();
+    }, [query])
+    
+    return (
+      <div className='searchDiv'>
+        <input type="text" onChange={
+          (e)=>setQuery(e.target.value)}
+          value={query}
+          />
+      </div>
+      )
+  } 
+  
+  //FOOD DATA COMPONENT
+  function FoodData({foodItems, setFoodItems}){
+    return (
+      <div>
+        {
+          //map through food items
+          foodItems ? foodItems.map((item)=>(
+            <FoodList 
+              key={item.id}
+              item={item} 
+              />)) : <h4>Trying to fetch data</h4>
+        }
+      </div>
+    )
+  }
+  function getId(item.id){
+    const foodId = item.id;
+    console.log(foodId)
+  }
+  // FOOD LIST COMPONENT
+  function FoodList({item}){
+    return (
+      <div className="foodItem">
+        <img src={item.image} alt={item.title}/>
+        <h5 className="foodTitle">{item.title}</h5>
+        <button onClick={()=>getId(item.id)}>View Recipe</button>
+      </div>
+    )
+  } 
+  
+ 
+ 
+ 
+ 
+ // FOR TESTING PURPOSE
+ /*function Search({foodItems, setFoodItems}){
+    const [query, setQuery] = useState('pizza');
+    
+    return (
+      <div className='searchDiv'>
+        <input type="text" onChange={
+          (e)=>setQuery(e.target.value)}
+          value={query}
+          />
+      </div>
+      )
+  }
+  
+  function MyFood(){
+    return(
+      <div className='foodItem'>
+        <img src="pumpkin.png" alt="pumpkin"/>
+        <h5 className='foodTitle'>Pumpkins Pepperozi</h5>
+        <button>View Recipe</button>
+      </div>
+    )
+  } */
+  
+  function MyFoodDetails(){
+    return <div className='foodDetails'>
+      <h3>Pumpkins Pepperozi</h3>
+      <img className='detailImg' src="pumpkin.png" alt="pumpkin.png"/>
+      <div className='timeQtyDiv'>
+        <div className='timeDiv'>
+          <i className='i fas fa-clock'></i>
+          <h5 className="prepTime"> 30 minutes</h5>
+        </div>
+        <div className='qtyDiv'>
+        <i className='i fas fa-users'></i>
+        <h5 className='qty'>Serves 2</h5>
+        </div>
+      </div>
+    </div>
+  }
+  
+  function Container({children}){
+    return <div className='container'>
+      {children}
+    </div>
+  }
+  function InnerContainer({children}){
+    return <div className='innercontainer'>
+      {children}
+    </div>
+  }
+  function App(){
+    const [foodItems, setFoodItems]= useState([])
+    return(
+      <div>
+        <Nav />
+        <Search
+          foodItems={foodItems} 
+          setFoodItems={setFoodItems}
+          />
+        <Container>
+          <InnerContainer>
+            <FoodData 
+              foodItems={foodItems} />
+          </InnerContainer>
+          <InnerContainer>
+            <MyFoodDetails />
+          </InnerContainer>
+        </Container>
+      </div>
+      );
+  };
+  
+  
+
+  // Render the component to the DOM
+  const rootElement = document.getElementById('root');
+  ReactDOM.createRoot(rootElement).render(<App/>);
+  
+</script>
+
+</body>
+
+</html>
